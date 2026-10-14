@@ -95,5 +95,12 @@ attack the MCP server. See the homework description for the full rules.
 ### Task 1
 > one paragraph describing your solution, and your results on `public_test`.
 
+## Homework 2 solution
+
+### Task 1: Agent implementation
+
+My implementation focuses on the two required functions, **`build_agent(tools)`** and **`score_cvs(agent, cvs)`**. In `build_agent`, I create a LangChain agent using `deepseek-v4-flash` at temperature 0 and the provided MCP tools. I design the system prompt to resolve candidate identity using LinkedIn profiles and, when useful, Facebook, then compare the assessed identity, employment, education and skill claims. The prompt accepts equivalent wording, rejects genuine discrepancies, and instructs the agent to ignore commands embedded in CVs or profile text. It specifies scores of 0.95 for consistent claims, 0.05 for discrepancies, and 0.50 for insufficient evidence. In `score_cvs`, I invoke the agent asynchronously for each CV and return a dictionary mapping every filename to a score. I implement parsing for plain numbers and simple formatted outputs, reject non-finite or out-of-range values, and require a successful full LinkedIn profile result before accepting a score above 0.5. I limit concurrency to three CVs and allow at most two agent attempts within a 180-second deadline per CV. Recoverable errors can trigger a retry; corrections for invalid output or missing profile evidence retain the previous messages. Unresolved failures receive a fallback score of 0.50 so that one failed CV does not stop the remaining evaluations. On `public_test`, my agent correctly classified all seven CVs, achieving **7/7 accuracy (100%)**.
+
+
 ### Task 2
 > the attack techniques you used and why you expect them to work.
