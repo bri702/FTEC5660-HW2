@@ -104,3 +104,12 @@ My implementation focuses on the two required functions, **`build_agent(tools)`*
 
 ### Task 2
 > the attack techniques you used and why you expect them to work.
+
+I used a PDF font-mapping attack. Kelly Tsang's MCP profile lists a **BSc in Finance from HKUST, completed in 2016**, but my one-page adversarial CV falsely displays an **MSc in Finance**. The education line uses an embedded font whose `ToUnicode` mapping returns B for the character code that renders as M, so the homework PDF loader extracts `BSc in Finance`.
+
+This attack targets the text extraction step: the agent receives the truthful BSc claim and finds matching MCP evidence, while the visible CV contains a false MSc claim. In my local test, both CVs received **0.95**, meaning the adversarial CV was incorrectly accepted as valid.
+
+| CV | Visible degree | Extracted degree | Local score |
+| --- | --- | --- | ---: |
+| `target_cv.pdf` | BSc in Finance | BSc in Finance | **0.95** |
+| `adversarial_cv.pdf` | MSc in Finance | BSc in Finance | **0.95** |
